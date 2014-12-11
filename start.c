@@ -2,96 +2,57 @@
 #include "inttypes.h"
 #include "string.h"
 #include "stdio.h"
-
 #include "segment.h"
-#include "fonctions.h"
+
+#include "init.h" /* Implémente les structures de données et les constantes */
+
+#include "f_TP1.h" /* Inclue les fonctions liés au TP1 sur la gestion de l'écran */
+#include "f_TP2.h"
+#include "f_TP3_4_5_6.h"
 
 #include <check.h>
 
-/*extern uint16_t* ptr_mem(uint32_t lig, uint32_t col);
-extern void efface_ecran(void);
-extern void ecrit_car(uint32_t lig, uint32_t col, char c, uint32_t cl, uint32_t cf, uint32_t ct);
-extern void place_curseur(uint32_t lig, uint32_t col);
-extern void defilement(void);
-extern void init_traitant_IT(uint32_t num_IT, void (*traitant)(void));
-extern void traitant_IT_32(void);
-extern void masque_IRQ(uint32_t num_IRQ, bool masque);
 
-void kernel_start(void)
-{
-	check_empty_screen(efface_ecran);
-	check_ptr_mem(ptr_mem);
-	check_set_cursor(place_curseur);
-	check_write_char(ecrit_car);
-	// void (*write_char)(uint32_t, uint32_t, char, uint32_t, uint32_t, uint32_t))
-	check_scrolling(defilement);
-	check_idt_entry(init_traitant_IT, 32, traitant_IT_32);
-	check_IRQ(masque_IRQ);
+/* Initialiation des variables globales */
+double time_double = 0; /* Temps écoulé de type double */
+int indice_dernier_elt_tab_processus = -1; /* Indice du dernier processus créé */
+table_processus tab_processus; /* La table des processus */
+processus processus_elu; /* Variable temporaire désignant le processus élu à un instant t */
 
-    sti();
-    while (1) {
-        hlt();
-    }
-}*/
 
 extern void proc1(void);
 extern void proc2(void);
 extern void proc3(void);
-
 extern void traitant_IT_32(void);
+
 
 void kernel_start(void){
 
+	/* Initialisation de l'écran et du curseur */
 	efface_ecran();
 	place_curseur(0,0);
-	indice_dernier_elt_tab_processus = 0;
 
+	/* Initialisation des interruptions */
 	masque_IRQ(0, false);
-	
 	init_traitant_IT(32, traitant_IT_32);
+
+	/* Initialisation de l'horloge */
 	set_clock();
 
-	// initialisation des structures de processus
-	processus proc_idle = newProcessus(indice_dernier_elt_tab_processus,"idle", ELU);
-	tab_processus[indice_dernier_elt_tab_processus] = proc_idle;
-
-	processus_elu = proc_idle;
-
-	// demarrage du processus par defaut
-
-	cree_processus(proc1, "proc_proc1");
-	cree_processus(proc2, "proc_proc2");
-	cree_processus(proc3, "proc_proc3");
+	/* Initialisation des processus */
 	
+	cree_processus("idle", NULL, ELU);
+	cree_processus("proc_proc1", proc1, ACTIVABLE);
+	cree_processus("proc_proc2", proc2, ACTIVABLE);
+	cree_processus("proc_proc3", proc3, ACTIVABLE);
 
+	processus_elu = tab_processus[0];
+
+	
+	/* Démarrage du processus par defaut */
 	idle();
 
- 	while (1) {
-		// cette fonction arrete le processeur
+ 	while(1) {
 		hlt();
 	}
-
 }
-
-// *************************************************** INTERRUPTIONS *************************************************
-
-
-/*void kernel_start(void)
-{
-	efface_ecran();
-	affiche_droite("Essai start wazaaaa");
-
-	masque_IRQ(0, false);
-	
-	init_traitant_IT(32, traitant_IT_32);
-	set_clock();
-	
-	sti();
-    while (1) {
-        // cette fonction arrete le processeur
-        hlt();
-    }
-}*/
-
-
-
