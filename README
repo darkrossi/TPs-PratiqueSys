@@ -1,0 +1,13 @@
+TPs Pratique du Système
+
+FOURNIER Mickaël, ISSC 2A
+
+Les modules :
+	- init.h contient les structures de données ainsi que les constantes utilisées
+	- f_TP1.* contiennent les fonctions relatives au TP1 (Gestion de l'écran)
+	- f_TP2.* contiennent les fonctions relatives au TP2 (Gestion des interruptions)
+	- f_TP3_4_5_6.* contiennent les fonctions relatives au TP 3, 4, 5 et 6 (Gestion des processus)
+
+Remarque : 
+	Les parties "Terminaison automatique d'un processus" et "Création dynamique des processus" (toute fin du TP 4-5-6) n'ont
+	pas pu être traitées. 
